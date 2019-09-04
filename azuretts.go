@@ -58,21 +58,24 @@ const serviceNameMappingString = "Microsoft Server Speech Text to Speech Voice"
 // For API reference see https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/rest-apis#sample-request-1
 func voiceXML(speechText, description string, locale Region, gender Gender) string {
 
-	return fmt.Sprintf(`<speak version='1.0' xml:lang='%s'><voice xml:lang='%s' xml:gender='%s' name='%s %s'>%s</voice></speak>`,
-		locale, locale, gender, serviceNameMappingString, description, speechText)
+	return fmt.Sprintf(`<speak version='1.0' xml:lang='%s'><voice xml:lang='%s' xml:gender='%s' name='%s'>%s</voice></speak>`,
+		locale, locale, gender, serviceNameMappingString, speechText)
 }
 
 // Synthesize returns a bytestream of the rendered text-to-speech in the target audio format. `speechText` is the string of
 // text in which a user wishes to Synthesize, `region` is the language/locale, `gender` is the desired output voice
 // and `audioOutput` captures the audio format.
-func (az *AzureCSTextToSpeech) Synthesize(speechText string, region Region, gender Gender, audioOutput AudioOutput) ([]byte, error) {
+func (az *AzureCSTextToSpeech) Synthesize(speechText string, region Region, gender Gender, audioOutput AudioOutput, generateXML bool) ([]byte, error) {
 
 	descriprtion, ok := localeToGender[localeGender{region, gender}]
 	if !ok {
 		return nil, fmt.Errorf("unable to locale region=%s, gender=%s pair", region, gender)
 	}
 
-	v := voiceXML(speechText, descriprtion, region, gender)
+	v := speechText
+	if generateXML {
+		v = voiceXML(speechText, descriprtion, region, gender)
+	}
 	request, err := http.NewRequest(http.MethodPost, az.APIBase, bytes.NewBufferString(v))
 	if err != nil {
 		return nil, err
