@@ -13,7 +13,7 @@ import (
 const v1Path = "/cognitiveservices/v1"
 
 // synthesizeActionTimeout is the amount of time the http client will wait for a response during Synthesize request
-const synthesizeActionTimeout = time.Second * 30
+const synthesizeActionTimeout = time.Second * 5
 
 // tokenRefreshTimeout is the amount of time the http client will wait during the token refresh action.
 const tokenRefreshTimeout = time.Second * 15
