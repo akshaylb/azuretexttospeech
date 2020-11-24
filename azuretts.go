@@ -95,6 +95,7 @@ func (az *AzureCSTextToSpeech) Synthesize(speechText string, region Region, gend
 	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("unexpected status code; status=%s", response.Status)
 	}
+        fmt.Println("Headers", response.Header)
 	return ioutil.ReadAll(response.Body)
 }
 
